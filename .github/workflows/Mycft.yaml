@@ -19,8 +19,8 @@ Resources:
         Ec2SubnetIds: 
           - subnet-"subnet-01b68b68cd8eb4f82"
         Ec2KeyName: "onekey"
-      JobFlowRole: "arn:aws:iam::963746058908:role/EMR_EC2_DefaultRole"
-      ServiceRole: "arn:aws:iam::963746058908:role/EMR_DefaultRole"
+      JobFlowRole: "EMR_EC2_DefaultRole"
+      ServiceRole: "EMR_DefaultRole"
           
   MySparkStep:
     Type: AWS::EMR::Step
