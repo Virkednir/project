@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Parameters:
+  InputFilePath:
+    Type: String
+Resources:
+  MyEMRCluster:
+    Type: AWS::EMR::Cluster
+    Properties:
+      Name: MyEMRCluster
+      ReleaseLabel: emr-7.0.0
+      Applications:
+        - Name: Spark
+      Instances:
+        MasterInstanceGroup:
+          InstanceCount: 1  
+          InstanceType: m5.xlarge
+          Name: MASTER
+        CoreInstanceGroup: 
+          InstanceCount: 2
+          InstanceType: m5.xlarge
+          Name: CORE
+        Ec2SubnetIds: 
+          - subnet-"subnet-01b68b68cd8eb4f82"
+        Ec2KeyName: "onekey"
+      JobFlowRole: "arn:aws:iam::963746058908:role/EMR_EC2_DefaultRole"
+      ServiceRole: "arn:aws:iam::963746058908:role/EMR_DefaultRole"
+          
+  MySparkStep:
+    Type: AWS::EMR::Step
+    Properties:
+      Name: MySparkStep
+      ActionOnFailure: CONTINUE
+      HadoopJarStep:
+        Jar: command-runner.jar
+        Args:
+          - spark-submit
+          - --deploy-mode
+          - cluster
+          - --class
+          - org.apache.spark.deploy.Mysparkob
+          - s3://requiredfiles2323/a.py
+          - --jars
+          - s3://requiredfiles2323/spark-sql-kafka-0-10_2.12-3.2.1.jar
+          - s3://requiredfiles2323/kafka-clients-2.1.1.jar
+      JobFlowId: !Ref MyEMRCluster
+      DependsOn: MyEMRCrawlerTrigger
+
+  MyEMRCrawlerTrigger:
+    Type: AWS::Glue::Trigger
+    Properties:
+      Name: MyEMRCrawlerTrigger
+      Type: ON_DEMAND
+      Role: arn:aws:iam::963746058908:role/LabRole
+      DatabaseName: project
+      Targets:
+          S3Targets:
+            -Path: s3://athenabucket-231
