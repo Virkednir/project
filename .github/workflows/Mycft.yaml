@@ -49,8 +49,3 @@ Resources:
         S3Targets:
           - Path: s3://athenabucket-231/final.parquet
       Role: arn:aws:iam::963746058908:role/LabRole
-    Properties:
-      Name: MyEMRCrawlerTrigger
-      Type: ON_DEMAND
-      Actions:
-      - CrawlerName: proj34
