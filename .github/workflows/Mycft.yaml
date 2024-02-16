@@ -40,15 +40,38 @@ Resources:
           - s3://requiredfiles2323/spark-sql-kafka-0-10_2.12-3.2.1.jar
           - s3://requiredfiles2323/kafka-clients-2.1.1.jar
       JobFlowId: !Ref MyEMRCluster
-      DependsOn: MyEMRCrawlerTrigger
-
-  MyEMRCrawlerTrigger:
-    Type: AWS::Glue::Trigger
+      DependsOn: MyEMRTrigger
+ GlueWorkflow:
+    Type: AWS::Glue::Workflow
     Properties:
-      Name: MyEMRCrawlerTrigger
+      Description: ETL Job
+      MaxConcurrentRuns: 1
+      Name: prj-workflow
+
+  MyEMRTrigger:
+    Type: AWS::Glue::Trigger
+     DependsOn:
+      - GlueWorkflow
+      - MyEMRCluster
+    Properties:
+      Actions:
+        - JobName: !Ref MyEMRCluster
+      Description: Triggers the EMR job
+      Name: MyEMRTrigger
       Type: ON_DEMAND
       Role: arn:aws:iam::963746058908:role/LabRole
-      DatabaseName: project
-      Targets:
-          S3Targets:
-            -Path: s3://athenabucket-231
+      WorkflowName: prj-workflow
+
+  MyEMRTrigger1:
+    Type: AWS::Glue::Trigger
+    DependsOn:
+      - GlueWorkflow
+      - MyEMRTrigger
+    Properties:
+      Actions:
+        - JobName: !Ref MySparkStep
+      Description: Triggers the Spark job
+      Name: MyEMRTrigger1
+      Type: ON_DEMAND
+      Role: arn:aws:iam::963746058908:role/LabRole
+      WorkflowName: prj-workflow
