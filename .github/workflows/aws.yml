@@ -27,7 +27,7 @@ jobs:
           
       - name: Start EMR cluster
         run: |
-          cluster_info=$(aws emr describe-clusters --query 'Clusters[?Name==`MyEMRCluster`].[Id]' --output text)
+          cluster_info=$(aws emr describe-cluster --query 'Clusters[?Name==`MyEMRCluster`].[Id]' --output text)
 
           if [ -z "$cluster_info" ]; then
               echo "Error: Cluster ID not found."
