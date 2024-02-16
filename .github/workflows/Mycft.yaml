@@ -41,7 +41,8 @@ Resources:
           - s3://requiredfiles2323/kafka-clients-2.1.1.jar
       JobFlowId: !Ref MyEMRCluster
       DependsOn: MyEMRTrigger
- GlueWorkflow:
+  
+  GlueWorkflow:
     Type: AWS::Glue::Workflow
     Properties:
       Description: ETL Job
