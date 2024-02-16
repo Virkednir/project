@@ -51,9 +51,6 @@ Resources:
 
   MyEMRTrigger:
     Type: AWS::Glue::Trigger
-     DependsOn:
-      - GlueWorkflow
-      - MyEMRCluster
     Properties:
       Actions:
         - JobName: !Ref MyEMRCluster
@@ -65,6 +62,14 @@ Resources:
 
   MyEMRTrigger1:
     Type: AWS::Glue::Trigger
+    Properties:
+      Actions:
+        - JobName: !Ref MySparkStep
+      Description: Triggers the Spark job
+      Name: MyEMRTrigger1
+      Type: ON_DEMAND
+      Role: arn:aws:iam::963746058908:role/LabRole
+      WorkflowName: prj-workflow
     DependsOn:
       - GlueWorkflow
       - MyEMRTrigger
