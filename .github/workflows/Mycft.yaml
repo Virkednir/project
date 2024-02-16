@@ -1,4 +1,7 @@
 AWSTemplateFormatVersion: "2010-09-09"
+Parameters:
+  InputFilePath:
+    Type: String
 Resources:
   MyEMRCluster:
     Type: AWS::EMR::Cluster
@@ -17,8 +20,8 @@ Resources:
           InstanceType: m5.xlarge
           Name: CORE
         Ec2SubnetIds: 
-          - "subnet-01b68b68cd8eb4f82"
-        Ec2KeyName: "onekey"
+          - subnet-01b68b68cd8eb4f82
+        Ec2KeyName: onekey
       JobFlowRole: "EMR_EC2_DefaultRole"
       ServiceRole: "EMR_DefaultRole"
           
@@ -36,45 +39,21 @@ Resources:
           - --class
           - org.apache.spark.deploy.Mysparkob
           - s3://requiredfiles2323/a.py
-          - --jars
-          - s3://requiredfiles2323/spark-sql-kafka-0-10_2.12-3.2.1.jar
-          - s3://requiredfiles2323/kafka-clients-2.1.1.jar
       JobFlowId: !Ref MyEMRCluster
-  
-  GlueWorkflow:
-    Type: AWS::Glue::Workflow
-    Properties:
-      Description: ETL Job
-      MaxConcurrentRuns: 1
-      Name: prj-workflow
+      DependsOn: MyEMRCrawlerTrigger
 
-  MyEMRTrigger:
+  MyEMRCrawlerTrigger:
     Type: AWS::Glue::Trigger
     Properties:
-      Actions:
-        - JobName: !Ref MyEMRCluster
-      Description: Triggers the EMR job
-      Name: MyEMRTrigger
+      Name: MyEMRCrawlerTrigger
       Type: ON_DEMAND
-      WorkflowName: prj-workflow
-
-  MyEMRTrigger1:
-    Type: AWS::Glue::Trigger
-    Properties:
       Actions:
-        - JobName: !Ref MySparkStep
-      Description: Triggers the Spark job
-      Name: MyEMRTrigger1
-      Type: ON_DEMAND
-      WorkflowName: prj-workflow
-    DependsOn:
-      - GlueWorkflow
-      - MyEMRTrigger
-    Properties:
-      Actions:
-        - JobName: !Ref MySparkStep
-      Description: Triggers the Spark job
-      Name: MyEMRTrigger1
-      Type: ON_DEMAND
-      Role: arn:aws:iam::963746058908:role/LabRole
-      WorkflowName: prj-workflow
+        - CrawlerName: proj34
+      Predicate:
+        Conditions:
+          - LogicalOperator: EQUALS
+            JobRunState:
+              - SUCCEEDED
+            CrawlerName: proj34
+            State: SUCCEEDED
+        Logical: AND
