@@ -38,19 +38,3 @@ Resources:
           - s3://requiredfiles2323/a.py
       JobFlowId: !Ref MyEMRCluster
       DependsOn: MyEMRCrawlerTrigger
-
-  MyEMRCrawlerTrigger:
-    Type: AWS::Glue::Trigger
-    Properties:
-      Name: MyEMRCrawlerTrigger
-      Type: ON_DEMAND
-      Actions:
-        - CrawlerName: proj34
-      Predicate:
-        Conditions:
-          - LogicalOperator: EQUALS
-            JobRunState:
-              - SUCCEEDED
-            CrawlerName: proj34
-            State: SUCCEEDED
-        Logical: AND
