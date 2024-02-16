@@ -37,4 +37,3 @@ Resources:
           - org.apache.spark.deploy.Mysparkob
           - s3://requiredfiles2323/a.py
       JobFlowId: !Ref MyEMRCluster
-      DependsOn: MyEMRCrawlerTrigger
