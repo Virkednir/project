@@ -1,7 +1,4 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Parameters:
-  InputFilePath:
-    Type: String
 Resources:
   MyEMRCluster:
     Type: AWS::EMR::Cluster
