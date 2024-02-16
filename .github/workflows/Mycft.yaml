@@ -40,7 +40,6 @@ Resources:
           - s3://requiredfiles2323/spark-sql-kafka-0-10_2.12-3.2.1.jar
           - s3://requiredfiles2323/kafka-clients-2.1.1.jar
       JobFlowId: !Ref MyEMRCluster
-      DependsOn: MyEMRTrigger
   
   GlueWorkflow:
     Type: AWS::Glue::Workflow
@@ -57,7 +56,6 @@ Resources:
       Description: Triggers the EMR job
       Name: MyEMRTrigger
       Type: ON_DEMAND
-      Role: arn:aws:iam::963746058908:role/LabRole
       WorkflowName: prj-workflow
 
   MyEMRTrigger1:
@@ -68,7 +66,6 @@ Resources:
       Description: Triggers the Spark job
       Name: MyEMRTrigger1
       Type: ON_DEMAND
-      Role: arn:aws:iam::963746058908:role/LabRole
       WorkflowName: prj-workflow
     DependsOn:
       - GlueWorkflow
