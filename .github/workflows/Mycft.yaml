@@ -42,6 +42,9 @@ Resources:
 
   DataCrawler:
     Type: AWS::Glue::Crawler
+    DependsOn:
+      - MyEMRCluster
+      - MySparkStep
     Properties:
       Name: data-crawler
       DatabaseName: default
