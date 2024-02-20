@@ -36,7 +36,7 @@ Resources:
           - --class
           - org.apache.spark.deploy.Mysparkob
           - --packages
-          - org.apache.spark:spark-sql-kafka-0-10_2.12-3.2.1.jar
+          - org.apache.spark:spark-sql-kafka-0-10_2.12-3.2.1
           - s3://requiredfiles2323/a.py
       JobFlowId: !Ref MyEMRCluster
 
